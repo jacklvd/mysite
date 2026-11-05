@@ -30,7 +30,6 @@ const Project = () => {
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
-		setIsLoading(true);
 		// Projects now come solely from GitHub Discussions (via our server route),
 		// already sorted by `order`. The Sanity source is migrated and commented out.
 		fetch('/api/projects')
@@ -73,7 +72,7 @@ const Project = () => {
 		<section className="py-16 md:py-24" id="work">
 			<motion.p
 				{...inView(0)}
-				className="text-[0.6rem] tracking-[0.4em] uppercase text-muted-foreground mb-3"
+				className="text-[0.7rem] tracking-[0.4em] uppercase text-muted-foreground mb-3"
 			>
 				03 — Projects
 			</motion.p>
@@ -95,7 +94,7 @@ const Project = () => {
 						<div>
 							<motion.p
 								{...inView(0.1)}
-								className="text-[0.6rem] tracking-[0.3em] uppercase text-muted-foreground mb-6"
+								className="text-[0.7rem] tracking-[0.3em] uppercase text-muted-foreground mb-6"
 							>
 								Featured
 							</motion.p>
@@ -130,7 +129,7 @@ const Project = () => {
 						<div>
 							<motion.p
 								{...inView(0.1)}
-								className="text-[0.6rem] tracking-[0.3em] uppercase text-muted-foreground mb-6"
+								className="text-[0.7rem] tracking-[0.3em] uppercase text-muted-foreground mb-6"
 							>
 								More work
 							</motion.p>
@@ -185,13 +184,13 @@ const Project = () => {
 															.map((tag: string) => (
 																<span
 																	key={tag}
-																	className="px-2 py-0.5 text-[0.6rem] tracking-wider uppercase border border-foreground/15 text-muted-foreground"
+																	className="px-2 py-0.5 text-[0.7rem] tracking-wider uppercase border border-foreground/15 text-muted-foreground"
 																>
 																	{tag}
 																</span>
 															))}
 														{work.technologies.length > 3 && (
-															<span className="px-2 py-0.5 text-[0.6rem] tracking-wider uppercase border border-foreground/15 text-muted-foreground">
+															<span className="px-2 py-0.5 text-[0.7rem] tracking-wider uppercase border border-foreground/15 text-muted-foreground">
 																+{work.technologies.length - 3}
 															</span>
 														)}

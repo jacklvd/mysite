@@ -61,7 +61,7 @@ function Role({
 				{exp.company}
 				<ExternalLink size={11} />
 			</a>
-			<p className="mt-2 text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground/60">
+			<p className="mt-2 text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground">
 				{exp.date}
 			</p>
 
@@ -200,7 +200,7 @@ const ExperienceSection: React.FC = () => {
 		<section className="py-16 md:py-24" id="experience">
 			<motion.p
 				{...inView(0)}
-				className="mb-3 text-[0.6rem] uppercase tracking-[0.4em] text-muted-foreground"
+				className="mb-3 text-[0.7rem] uppercase tracking-[0.4em] text-muted-foreground"
 			>
 				02 — Experience
 			</motion.p>
