@@ -54,7 +54,7 @@ export function ProjectDetailView({ project, body }: ProjectDetailViewProps) {
 						{project.technologies.map(tag => (
 							<span
 								key={tag}
-								className="border border-foreground/15 px-2 py-0.5 text-[0.6rem] uppercase tracking-wider text-muted-foreground"
+								className="border border-foreground/15 px-2 py-0.5 text-[0.7rem] uppercase tracking-wider text-muted-foreground"
 							>
 								{tag}
 							</span>

@@ -82,7 +82,7 @@ export function About() {
 		<section className="py-16 md:py-24" id="about">
 			<motion.p
 				{...fadeUp(0)}
-				className="text-[0.6rem] tracking-[0.4em] uppercase text-muted-foreground mb-3"
+				className="text-[0.7rem] tracking-[0.4em] uppercase text-muted-foreground mb-3"
 			>
 				01 — About
 			</motion.p>
@@ -139,7 +139,7 @@ export function About() {
 						</div>
 					</div>
 					<div>
-						<p className="text-[0.6rem] tracking-[0.4em] uppercase text-muted-foreground mb-2">
+						<p className="text-[0.7rem] tracking-[0.4em] uppercase text-muted-foreground mb-2">
 							Currently listening
 						</p>
 						<div className="overflow-hidden rounded-xl">
@@ -191,7 +191,7 @@ export function About() {
 
 						<button
 							onClick={() => setExpanded(!expanded)}
-							className="flex items-center gap-1.5 text-[0.65rem] tracking-[0.3em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-200"
+							className="flex items-center gap-1.5 text-[0.75rem] tracking-[0.3em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-200"
 						>
 							<ChevronDown
 								size={12}
@@ -222,7 +222,7 @@ export function About() {
               the scraps land on the bottom edge whatever height is going
               spare, and the two columns finish level. */}
 					<div className="mt-auto pt-10">
-						<p className="mb-2 text-[0.6rem] uppercase tracking-[0.4em] text-muted-foreground">
+						<p className="mb-2 text-[0.7rem] uppercase tracking-[0.4em] text-muted-foreground">
 							Scrap pile — click to add, drag to move
 						</p>
 						<PaperPile className="h-40 md:h-56" />
