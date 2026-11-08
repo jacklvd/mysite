@@ -9,6 +9,7 @@ import { PublicationsSection } from './components/publications';
 import { Guestbook } from './components/contact';
 import { SectionNav } from './components/section-nav';
 import { ParallaxBackdrop } from '@/components/effects/parallax-backdrop';
+import { PageTurn } from '@/components/effects/page-turn';
 import { WavyBorder } from '@/components/effects/wavy-frame';
 import { ChevronUp } from 'lucide-react';
 import { useLoading } from '@/context/loading-context';
@@ -128,10 +129,18 @@ export default function Portfolio() {
 				<main className="flex-1">
 					<div className="w-full max-w-6xl mx-auto px-6 sm:px-10 md:px-16">
 						<About />
-						<ExperienceSection />
-						<Project />
-						<PublicationsSection />
-						<Guestbook />
+						<PageTurn>
+							<ExperienceSection />
+						</PageTurn>
+						<PageTurn>
+							<Project />
+						</PageTurn>
+						<PageTurn>
+							<PublicationsSection />
+						</PageTurn>
+						<PageTurn>
+							<Guestbook />
+						</PageTurn>
 					</div>
 				</main>
 
