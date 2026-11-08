@@ -16,15 +16,19 @@ export function SectionNav() {
 		// Size-independent scrollspy: the active section is the last one whose top
 		// has crossed a line near the top of the viewport. This keeps short sections
 		// (e.g. Experience) reliably detectable instead of flickering past a thin band.
+		// Checking left too makes the same rule work when the sections are book
+		// pages laid out sideways (md+), where the pages' scroller isn't the window.
 		let raf = 0;
 
 		const update = () => {
 			raf = 0;
-			const line = window.innerHeight * 0.35;
+			const lineY = window.innerHeight * 0.35;
+			const lineX = window.innerWidth * 0.35;
 			let current = sections[0].id;
 			for (const s of sections) {
 				const el = document.getElementById(s.id);
-				if (el && el.getBoundingClientRect().top <= line) {
+				const r = el?.getBoundingClientRect();
+				if (r && r.top <= lineY && r.left <= lineX) {
 					current = s.id;
 				}
 			}
@@ -36,19 +40,28 @@ export function SectionNav() {
 		};
 
 		update();
-		window.addEventListener('scroll', onScroll, { passive: true });
+		// Capture catches scrolls of the page scrollers too (scroll doesn't bubble).
+		document.addEventListener('scroll', onScroll, {
+			capture: true,
+			passive: true,
+		});
 		window.addEventListener('resize', onScroll);
 		return () => {
-			window.removeEventListener('scroll', onScroll);
+			document.removeEventListener('scroll', onScroll, { capture: true });
 			window.removeEventListener('resize', onScroll);
 			if (raf) cancelAnimationFrame(raf);
 		};
 	}, []);
 
 	const handleClick = (id: string) => {
-		document
-			.getElementById(id)
-			?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		// Scroll to the section's book page when it has one, so the snap lands
+		// cleanly on the page edge.
+		const el = document.getElementById(id);
+		(el?.closest('[data-page]') ?? el)?.scrollIntoView({
+			behavior: 'smooth',
+			block: 'start',
+			inline: 'start',
+		});
 	};
 
 	return (

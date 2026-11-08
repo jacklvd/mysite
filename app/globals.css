@@ -782,6 +782,74 @@ img {
 	}
 }
 
+/* Book pages on /meet-jack (md+): as a page scrolls off to the left it turns
+   over like a real leaf, hinged at the screen's left edge, while the next page
+   waits underneath. Both are counter-translated against the scroll so only the
+   turn shows, and it's scroll-driven, so drags, wheels and snaps all scrub it.
+   dev-note: needs scroll-driven animations (Chrome/Edge/Safari 26+); elsewhere
+   pages simply slide. Ranges stop a hair short of both resting positions so a
+   page at rest carries no transform, which would re-anchor the guestbook's
+   fixed-position note. */
+@supports (animation-timeline: view()) {
+	@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+		.book-page {
+			animation:
+				leaf-out linear none,
+				leaf-in linear none;
+			animation-timeline: view(inline), view(inline);
+			animation-range:
+				exit 0.5% exit 100%,
+				entry 0.5% entry 99.5%;
+			transform-origin: left center;
+			backface-visibility: hidden;
+		}
+	}
+}
+
+/* Only 0 → -90deg is ever visible (past edge-on, the hinge at the screen's
+   left edge carries the page off-screen), so the whole scroll is spent on
+   that half. The page darkens as it tips away from the light and casts a
+   shadow on the page beneath, which brightens as it's uncovered. Pacing comes
+   from the eased scroll in components/effects/book.tsx. */
+@keyframes leaf-out {
+	from,
+	to {
+		z-index: 2;
+		/* paper is see-through at rest; it's opaque only while it turns, with a
+		   faint curl shading toward its free edge */
+		background-color: hsl(var(--background));
+		background-image:
+			linear-gradient(to left, rgba(0, 0, 0, 0.07), transparent 30%),
+			repeating-linear-gradient(
+				transparent 0 31px,
+				hsl(var(--primary) / 0.07) 31px 32px
+			);
+	}
+	from {
+		transform: translateX(0.5%) perspective(6000px) rotateY(0deg);
+		box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+		filter: brightness(1);
+	}
+	to {
+		transform: translateX(100%) perspective(6000px) rotateY(-90deg);
+		box-shadow: 40px 0 80px rgba(0, 0, 0, 0.3);
+		filter: brightness(0.7);
+	}
+}
+
+@keyframes leaf-in {
+	from {
+		z-index: 1;
+		transform: translateX(-99.5%);
+		filter: brightness(0.82);
+	}
+	to {
+		z-index: 1;
+		transform: translateX(-0.5%);
+		filter: brightness(1);
+	}
+}
+
 @keyframes pet-bob {
 	0%,
 	100% {

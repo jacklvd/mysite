@@ -1,13 +1,16 @@
 'use client';
 import { useState, type ReactNode } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { useBookMode } from './book';
 
 // Turns a sheet of paper away to reveal the section the first time it scrolls
 // into view. Only the flap is transformed (perspective lives in its own
 // transform, not on an ancestor), so fixed-position descendants like the
 // guestbook's expanded note keep positioning against the viewport.
+// Phones only: on md+ the sideways book pages turn for real (see .book-page).
 export function PageTurn({ children }: { children: ReactNode }) {
-	const reduced = useReducedMotion();
+	const bookMode = useBookMode();
+	const reduced = useReducedMotion() || bookMode;
 	const [turned, setTurned] = useState(false);
 
 	return (
