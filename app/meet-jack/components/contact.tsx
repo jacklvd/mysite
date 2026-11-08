@@ -24,7 +24,7 @@ import {
 	WavyButtonBorder,
 	WavyDivider,
 } from '@/components/effects/wavy-frame';
-import { inView } from '@/components/effects/reveal';
+import { PageHeading } from '@/components/effects/page-heading';
 import {
 	NOTE_COLORS,
 	DEFAULT_NOTE_COLOR,
@@ -327,17 +327,12 @@ export function Guestbook() {
 
 	return (
 		<section id="contact" className="scroll-mt-24 py-16 md:py-24">
-			<motion.header {...inView()} className="mb-12 md:mb-16">
-				<p className="mb-3 text-[0.7rem] uppercase tracking-[0.4em] text-muted-foreground">
-					Say hello
+			<PageHeading page="05" label="guestbook" title="Sign the book.">
+				<p className="mt-6 max-w-md font-hand text-2xl text-muted-foreground">
+					Leave a note before you go — it stays pinned in these pages for
+					everyone to see.
 				</p>
-				<h2 className="font-title text-5xl text-foreground md:text-6xl">
-					The Guestbook
-				</h2>
-				<p className="mt-3 max-w-md font-hand text-2xl text-muted-foreground">
-					Leave a note before you go — pin it to the board for everyone to see.
-				</p>
-			</motion.header>
+			</PageHeading>
 
 			<div className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
 				{/* Note-writing sheet */}
@@ -447,7 +442,7 @@ export function Guestbook() {
 										<WavyButtonBorder />
 										<span className="relative flex items-center gap-2">
 											<Send className="h-4 w-4" />
-											{submitting ? 'Pinning…' : 'Pin to the board'}
+											{submitting ? 'Signing…' : 'Sign the book'}
 										</span>
 									</Button>
 								)}

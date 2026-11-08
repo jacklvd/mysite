@@ -73,7 +73,7 @@ export function SectionNav() {
 							}`}
 						/>
 						<span
-							className={`text-[0.7rem] tracking-[0.3em] uppercase transition-all duration-300 ${
+							className={`text-[0.7rem] font-type tracking-[0.15em] uppercase transition-all duration-300 ${
 								isActive
 									? 'text-foreground opacity-100'
 									: 'text-muted-foreground opacity-0 group-hover:opacity-100'

@@ -15,8 +15,9 @@ import {
 	WavyButtonBorder,
 	WavyDivider,
 } from '@/components/effects/wavy-frame';
-import { inView, fadeUp } from '@/components/effects/reveal';
+import { inView } from '@/components/effects/reveal';
 import { PaperPile } from '@/components/effects/paper-pile';
+import { PageHeading } from '@/components/effects/page-heading';
 
 // Sparkles that pop around the photo on hover. Full class strings are kept
 // literal so Tailwind's JIT picks them up (no runtime-built class names).
@@ -80,18 +81,7 @@ export function About() {
 
 	return (
 		<section className="py-16 md:py-24" id="about">
-			<motion.p
-				{...fadeUp(0)}
-				className="text-[0.7rem] tracking-[0.4em] uppercase text-muted-foreground mb-3"
-			>
-				01 — About
-			</motion.p>
-			<motion.h2
-				{...fadeUp(0.05)}
-				className="font-title text-5xl md:text-6xl text-foreground mb-12 md:mb-16"
-			>
-				Hi, I'm Jack.
-			</motion.h2>
+			<PageHeading page="01" label="about" title="Hi, I'm Jack." immediate />
 
 			<div className="grid grid-cols-1 lg:grid-cols-5 gap-14 lg:gap-20">
 				{/* Photo + Spotify */}
@@ -139,7 +129,7 @@ export function About() {
 						</div>
 					</div>
 					<div>
-						<p className="text-[0.7rem] tracking-[0.4em] uppercase text-muted-foreground mb-2">
+						<p className="text-[0.7rem] font-type tracking-[0.15em] uppercase text-muted-foreground mb-2">
 							Currently listening
 						</p>
 						<div className="overflow-hidden rounded-xl">
@@ -191,7 +181,7 @@ export function About() {
 
 						<button
 							onClick={() => setExpanded(!expanded)}
-							className="flex items-center gap-1.5 text-[0.75rem] tracking-[0.3em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-200"
+							className="flex items-center gap-1.5 text-[0.75rem] font-type tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors duration-200"
 						>
 							<ChevronDown
 								size={12}
@@ -207,7 +197,7 @@ export function About() {
 							href="https://drive.google.com/file/d/1CdnQUi06RV0N5SsTCVBkHaKUuiUTG6BG/view?usp=sharing"
 							className="group relative inline-flex items-center gap-2.5 px-5 py-3 text-xs font-medium
                 hover:translate-x-[3px] hover:translate-y-[3px]
-                transition-all duration-100 tracking-[0.2em] uppercase"
+                transition-all duration-100 font-type tracking-[0.15em] uppercase"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
@@ -222,7 +212,7 @@ export function About() {
               the scraps land on the bottom edge whatever height is going
               spare, and the two columns finish level. */}
 					<div className="mt-auto pt-10">
-						<p className="mb-2 text-[0.7rem] uppercase tracking-[0.4em] text-muted-foreground">
+						<p className="mb-2 text-[0.7rem] font-type tracking-[0.15em] uppercase text-muted-foreground">
 							Scrap pile — click to add, drag to move
 						</p>
 						<PaperPile className="h-40 md:h-56" />
