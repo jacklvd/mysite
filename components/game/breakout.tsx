@@ -46,6 +46,14 @@ export function Breakout() {
 		ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
 		let game: Game = createGame(LABELS);
+		// Theme palette is cached and refreshed only when <html> changes theme
+		// (next-themes toggles its class), not read every frame.
+		let palette = themeColors();
+		const themeWatch = new MutationObserver(() => (palette = themeColors()));
+		themeWatch.observe(document.documentElement, {
+			attributes: true,
+			attributeFilter: ['class', 'style'],
+		});
 		const keys = { left: false, right: false };
 		let raf = 0;
 		let last = performance.now();
@@ -92,13 +100,14 @@ export function Breakout() {
 					game.paddle.x + game.paddle.w / 2 + dir * KEY_SPEED * dt
 				);
 			step(game, dt);
-			draw(ctx, game);
+			draw(ctx, game, palette);
 			raf = requestAnimationFrame(frame);
 		};
 		raf = requestAnimationFrame(frame);
 
 		return () => {
 			cancelAnimationFrame(raf);
+			themeWatch.disconnect();
 			canvas.removeEventListener('pointermove', onPointerMove);
 			canvas.removeEventListener('pointerdown', onPointerDown);
 			canvas.removeEventListener('keydown', onKey);
@@ -150,8 +159,11 @@ function inkedRect(
 	ctx.closePath();
 }
 
-function draw(ctx: CanvasRenderingContext2D, g: Game) {
-	const c = themeColors();
+function draw(
+	ctx: CanvasRenderingContext2D,
+	g: Game,
+	c: ReturnType<typeof themeColors>
+) {
 	ctx.clearRect(0, 0, W, H);
 	ctx.lineJoin = 'round';
 	ctx.lineCap = 'round';
