@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
@@ -13,6 +14,14 @@ import {
 	WavyButtonBorder,
 	WavyDivider,
 } from '@/components/effects/wavy-frame';
+
+// WebGL needs the browser; load the 3D ink doodles client-side only.
+const InkDoodles3D = dynamic(
+	() => import('@/components/effects/ink-doodles-3d'),
+	{
+		ssr: false,
+	}
+);
 
 // ── Entrance choreography ────────────────────────────────────────────────────
 // Everything keys off `useEntranceOpen()` — the moment the preloader's book
@@ -82,6 +91,16 @@ export default function Home() {
 
 	return (
 		<div className="relative isolate min-h-screen overflow-hidden">
+			{/* 3D ink doodles (paper plane, book, pencil) — desktop only */}
+			<motion.div
+				className="absolute inset-0 hidden md:block"
+				initial={{ opacity: 0 }}
+				animate={{ opacity: open ? 0.7 : 0 }}
+				transition={backdropFade}
+			>
+				<InkDoodles3D />
+			</motion.div>
+
 			{/* Hand-drawn ink flourishes (moon, constellation, sparkles) */}
 			<motion.div
 				initial={{ opacity: 0 }}
