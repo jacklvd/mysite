@@ -16,6 +16,10 @@ const START_SPEED = 300; // px/s
 const SPEED_STEP = 6; // added per brick, so the rally tightens
 const MAX_BOUNCE = Math.PI / 3; // paddle edge sends the ball out at 60°
 const SUBSTEP = 1 / 240; // small enough that the ball can't tunnel a brick
+// 1px slack: paddle hits count if the ball was at most this far below its top
+// last substep, and a resting ball floats this far above it so it isn't
+// already touching on launch.
+const PADDLE_SLACK = 1;
 
 export type Brick = {
 	x: number;
@@ -113,7 +117,7 @@ function tick(g: Game, dt: number) {
 	if (
 		b.vy > 0 &&
 		b.y + b.r >= p.y &&
-		py + b.r <= p.y + 1 &&
+		py + b.r <= p.y + PADDLE_SLACK &&
 		b.x >= p.x - b.r &&
 		b.x <= p.x + p.w + b.r
 	) {
@@ -151,7 +155,7 @@ function tick(g: Game, dt: number) {
 
 function restOnPaddle(g: Game) {
 	g.ball.x = g.paddle.x + g.paddle.w / 2;
-	g.ball.y = g.paddle.y - g.ball.r - 1;
+	g.ball.y = g.paddle.y - g.ball.r - PADDLE_SLACK;
 	g.ball.vx = 0;
 	g.ball.vy = 0;
 }
