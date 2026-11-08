@@ -29,7 +29,15 @@ export interface RailSpan {
 // (0) and "rail bottom at viewport centre" (1), so a dot at fraction f of the
 // rail's height sits at the centre at exactly progress f — which is why the
 // pixel offsets divide straight through into the progress range.
-export function railSpan(centres: number[], railHeight: number): RailSpan {
+//
+// `reach` is the highest progress the scroller can actually get to. On a tall
+// screen the page runs out before the last dot reaches the centre, so the fill
+// is squeezed to finish at the bottom of the scroll instead of stalling.
+export function railSpan(
+	centres: number[],
+	railHeight: number,
+	reach = Infinity
+): RailSpan {
 	const h = railHeight > 0 ? railHeight : 1;
 	if (centres.length === 0)
 		return { top: 0, height: 0, from: 0, to: 1, stops: [] };
@@ -51,11 +59,13 @@ export function railSpan(centres: number[], railHeight: number): RailSpan {
 		};
 
 	const height = last - first;
+	const to = Math.min(last / h, reach);
 	return {
 		top: first,
 		height,
-		from: first / h,
-		to: last / h,
+		// Whole track already on screen: fill it as soon as there's no more to scroll.
+		from: Math.min(first / h, to - 0.001),
+		to,
 		stops: centres.map(c => (c - first) / height),
 	};
 }

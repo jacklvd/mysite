@@ -38,6 +38,19 @@ describe('railSpan', () => {
 		expect(railSpan([10, 20], 0).to).toBeGreaterThan(0);
 	});
 
+	it('finishes at the end of the scroll when the last dot cannot reach centre', () => {
+		// Tall screen: the page bottoms out at progress 0.5, short of the last dot (0.62).
+		const s = railSpan([10, 110, 310], 500, 0.5);
+		expect(s.to).toBe(0.5);
+		expect(s.from).toBe(0.02);
+	});
+
+	it('fills the whole track when it is all on screen without scrolling', () => {
+		const s = railSpan([10, 310], 500, 0);
+		expect(s.to).toBe(0);
+		expect(s.from).toBeLessThan(s.to);
+	});
+
 	describe('stops', () => {
 		it("puts the first dot at the line's head and the last at its end", () => {
 			const { stops } = railSpan([10, 110, 310], 500);

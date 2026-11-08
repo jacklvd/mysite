@@ -101,6 +101,7 @@ function Role({
 function Timeline({ experiences }: { experiences: Experience[] }) {
 	const reduced = useReducedMotion();
 	const railRef = useRef<HTMLDivElement>(null);
+	const scroller = usePageScroller();
 
 	// 0 = rail's top edge at the viewport centre, 1 = rail's bottom edge at the
 	// centre. That mapping is linear in scroll distance, so a dot at fraction f
@@ -109,7 +110,7 @@ function Timeline({ experiences }: { experiences: Experience[] }) {
 	const { scrollYProgress } = useScroll({
 		// The page scroller's ref lives on an ancestor and is attached after this
 		// component's layout effects; a passive effect runs once it's set.
-		container: usePageScroller(),
+		container: scroller,
 		layoutEffect: false,
 		target: railRef,
 		offset: ['start center', 'end center'],
@@ -136,14 +137,25 @@ function Timeline({ experiences }: { experiences: Experience[] }) {
 				const r = d.getBoundingClientRect();
 				return r.top - railTop + r.height / 2;
 			});
-			setSpan(railSpan(centres, rail.offsetHeight));
+			// Progress at the bottom of the scroll: where the rail's top would sit
+			// once the remaining scroll is used up, against the viewport centre.
+			const el = scroller?.current ?? document.documentElement;
+			const viewTop = scroller?.current ? el.getBoundingClientRect().top : 0;
+			const left = el.scrollHeight - el.clientHeight - el.scrollTop;
+			const topAtEnd = railTop - viewTop - left;
+			const reach = (el.clientHeight / 2 - topAtEnd) / rail.offsetHeight;
+			setSpan(railSpan(centres, rail.offsetHeight, reach));
 		};
 
 		measure();
 		const ro = new ResizeObserver(measure);
 		ro.observe(rail);
-		return () => ro.disconnect();
-	}, [experiences]);
+		window.addEventListener('resize', measure);
+		return () => {
+			ro.disconnect();
+			window.removeEventListener('resize', measure);
+		};
+	}, [experiences, scroller]);
 
 	// Re-mapped so the line is full exactly when the last dot reaches the centre.
 	const scrubbed = useTransform(scrollYProgress, [span.from, span.to], [0, 1]);
