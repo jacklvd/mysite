@@ -56,6 +56,10 @@ export function BookPage({ children }: { children: ReactNode }) {
 	);
 }
 
+const TURN_MS = 900;
+const easeInOut = (t: number) =>
+	t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
 const canScroll = (el: HTMLElement, dir: number) =>
 	dir > 0
 		? el.scrollTop + el.clientHeight < el.scrollHeight - 1
@@ -74,16 +78,36 @@ export function useBook(
 	const [page, setPage] = useState(0);
 	const [count, setCount] = useState(1);
 
+	// Turns are animated by hand: native smooth scroll is short and its curve
+	// can't be set, which made the leaf snap over. Snapping is paused meanwhile,
+	// or mandatory snap would yank each intermediate scrollLeft back to a page.
+	const anim = useRef(0);
+	const dest = useRef(0);
 	const turnTo = useCallback(
 		(i: number) => {
 			const b = bookRef.current;
 			if (!b) return;
 			const target = Math.max(0, Math.min(i, b.childElementCount - 1));
-			const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-			b.scrollTo({
-				left: target * b.clientWidth,
-				behavior: reduce ? 'auto' : 'smooth',
-			});
+			const from = b.scrollLeft;
+			const to = target * b.clientWidth;
+			dest.current = target;
+			cancelAnimationFrame(anim.current);
+			if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+				b.scrollLeft = to;
+				return;
+			}
+			b.style.scrollSnapType = 'none';
+			const start = performance.now();
+			const step = (now: number) => {
+				const t = Math.min((now - start) / TURN_MS, 1);
+				b.scrollLeft = from + (to - from) * easeInOut(t);
+				if (t < 1) anim.current = requestAnimationFrame(step);
+				else {
+					anim.current = 0;
+					b.style.scrollSnapType = '';
+				}
+			};
+			anim.current = requestAnimationFrame(step);
 		},
 		[bookRef]
 	);
@@ -93,6 +117,8 @@ export function useBook(
 		if (!book) return;
 		const inBook = () => book.scrollWidth > book.clientWidth;
 		const current = () => Math.round(book.scrollLeft / book.clientWidth);
+		// Where the next turn starts from: mid-turn, that's the page being turned to.
+		const from = () => (anim.current ? dest.current : current());
 		setCount(book.childElementCount);
 
 		const onScroll = () => setPage(current());
@@ -115,13 +141,13 @@ export function useBook(
 			e.preventDefault();
 			if (gesture !== 'none') return;
 			gesture = 'turned';
-			turnTo(current() + dir);
+			turnTo(from() + dir);
 		};
 
 		const onKey = (e: KeyboardEvent) => {
 			if (!inBook() || isTyping(e.target)) return;
-			if (e.key === 'ArrowRight') turnTo(current() + 1);
-			else if (e.key === 'ArrowLeft') turnTo(current() - 1);
+			if (e.key === 'ArrowRight') turnTo(from() + 1);
+			else if (e.key === 'ArrowLeft') turnTo(from() - 1);
 			else return;
 			e.preventDefault();
 		};
@@ -131,6 +157,7 @@ export function useBook(
 		window.addEventListener('keydown', onKey);
 		return () => {
 			clearTimeout(idle);
+			cancelAnimationFrame(anim.current);
 			book.removeEventListener('scroll', onScroll);
 			book.removeEventListener('wheel', onWheel);
 			window.removeEventListener('keydown', onKey);
