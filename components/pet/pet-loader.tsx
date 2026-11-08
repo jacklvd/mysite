@@ -151,7 +151,7 @@ export default function PetLoader({ onOpen }: PetLoaderProps) {
 								<motion.div
 									className="absolute text-foreground"
 									style={{
-										left: `calc(${count}% - 24px)`,
+										left: `calc(${count}% - 28px)`, // half the sprite's width
 										bottom: 'calc(100% - 6px)', // seat the feet on the ink line
 										transition: 'left 0.05s linear',
 									}}
@@ -177,7 +177,7 @@ export default function PetLoader({ onOpen }: PetLoaderProps) {
 										}
 										facing={1}
 										hat={hat}
-										className="h-12 w-12"
+										className="h-[70px] w-14" // 4:5, matches the 48×60 viewBox
 									/>
 								</motion.div>
 							</div>
