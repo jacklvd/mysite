@@ -25,6 +25,7 @@ import {
 	WavyDivider,
 } from '@/components/effects/wavy-frame';
 import { PageHeading } from '@/components/effects/page-heading';
+import Link from 'next/link';
 import {
 	NOTE_COLORS,
 	DEFAULT_NOTE_COLOR,
@@ -326,7 +327,7 @@ export function Guestbook() {
 	}
 
 	return (
-		<section id="contact" className="scroll-mt-24 py-16 md:py-24">
+		<section id="contact" className="relative scroll-mt-24 py-16 md:py-24">
 			<PageHeading page="05" label="guestbook" title="Sign the book.">
 				<p className="mt-6 max-w-md font-hand text-2xl text-muted-foreground">
 					Leave a note before you go — it stays pinned in these pages for
@@ -515,6 +516,25 @@ export function Guestbook() {
 					<NoteModal note={openNote} onClose={() => setOpenNote(null)} />
 				)}
 			</AnimatePresence>
+
+			{/* Dog-eared corner — the way into the hidden p. 06 */}
+			<Link
+				href="/scribbles"
+				aria-label="Turn to a hidden page"
+				title="p. 06?"
+				className="group absolute bottom-0 right-0 block h-10 w-10 transition-all duration-300 hover:h-16 hover:w-16"
+			>
+				<span
+					aria-hidden
+					className="absolute inset-0 bg-[linear-gradient(135deg,transparent_50%,hsl(var(--muted))_50%)] shadow-[-2px_-2px_6px_rgba(0,0,0,0.08)]"
+				/>
+				<span
+					aria-hidden
+					className="absolute bottom-1 right-1.5 font-type text-[0.6rem] text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100"
+				>
+					p.06
+				</span>
+			</Link>
 		</section>
 	);
 }
