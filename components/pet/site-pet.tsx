@@ -310,11 +310,13 @@ export default function SitePet() {
 					const r = el.getBoundingClientRect();
 					return { el, top: r.top, left: r.left, right: r.right };
 				})
-				// only ledges that are on screen and wide enough to stand on
+				// only ledges that are fully on screen and wide enough to stand on
 				.filter(
 					l =>
 						l.top > 40 &&
 						l.top < window.innerHeight - 40 &&
+						l.left >= 0 &&
+						l.right <= window.innerWidth &&
 						l.right - l.left > PET_W + 8
 				);
 
@@ -478,6 +480,8 @@ export default function SitePet() {
 					if (
 						r.top < 20 ||
 						r.top > window.innerHeight - 20 ||
+						r.left < 0 || // its page turned away (sideways book pages)
+						r.right > window.innerWidth ||
 						r.right - r.left < PET_W
 					) {
 						ph.perch = null;

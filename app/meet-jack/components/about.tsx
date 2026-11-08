@@ -18,6 +18,7 @@ import {
 import { inView } from '@/components/effects/reveal';
 import { PaperPile } from '@/components/effects/paper-pile';
 import { PageHeading } from '@/components/effects/page-heading';
+import { usePageScroller } from '@/components/effects/book';
 
 // Sparkles that pop around the photo on hover. Full class strings are kept
 // literal so Tailwind's JIT picks them up (no runtime-built class names).
@@ -70,6 +71,7 @@ export function About() {
 	const portraitRef = useRef<HTMLDivElement>(null);
 	const prefersReduced = useReducedMotion();
 	const { scrollYProgress: portraitProgress } = useScroll({
+		container: usePageScroller(),
 		target: portraitRef,
 		offset: ['start end', 'end start'],
 	});

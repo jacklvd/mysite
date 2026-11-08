@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type RefObject } from 'react';
 import {
 	motion,
 	useScroll,
@@ -143,10 +143,21 @@ function Band({
 	);
 }
 
-export function ParallaxBackdrop() {
+// `book` is the horizontal page scroller on /meet-jack: progress follows
+// whichever axis is actually scrolling (pages sideways on md+, window on phones).
+export function ParallaxBackdrop({
+	book,
+}: {
+	book?: RefObject<HTMLElement | null>;
+}) {
 	const prefersReduced = useReducedMotion();
 	const [isSmall, setIsSmall] = useState(false);
-	const { scrollYProgress } = useScroll();
+	const { scrollYProgress: windowY } = useScroll();
+	const { scrollXProgress: bookX } = useScroll({ container: book });
+	const scrollYProgress = useTransform<number, number>(
+		[windowY, bookX],
+		([y, x]) => Math.max(y, x)
+	);
 
 	// Scale drift down on small screens (cheap + smooth on phones). SSR-safe:
 	// defaults to false on the server, corrected on mount. It's an aria-hidden
