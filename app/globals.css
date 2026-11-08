@@ -228,8 +228,10 @@ img {
 		--popover: 0 0% 100%;
 		--popover-foreground: 222.2 84% 4.9%;
 
-		--primary: 221.2 83.2% 53.3%;
-		--primary-foreground: 210 40% 98%;
+		/* Sketchbook inks: blue (#2a3b8f) + red (#d94a2b) */
+		--primary: 229 55% 36%;
+		--primary-foreground: 36 44% 96%;
+		--ink-red: 10 69% 51%;
 
 		--secondary: 210 40% 96.1%;
 		--secondary-foreground: 222.2 47.4% 11.2%;
@@ -245,7 +247,7 @@ img {
 
 		--border: 214.3 31.8% 91.4%;
 		--input: 214.3 31.8% 91.4%;
-		--ring: 221.2 83.2% 53.3%;
+		--ring: 229 55% 36%;
 
 		--radius: 0.5rem;
 
@@ -271,8 +273,10 @@ img {
 		--popover: 30 12% 12%;
 		--popover-foreground: 36 30% 90%;
 
-		--primary: 217.2 91.2% 59.8%;
-		--primary-foreground: 222.2 47.4% 11.2%;
+		/* Inks lifted for dark paper */
+		--primary: 228 70% 74%;
+		--primary-foreground: 30 14% 8%;
+		--ink-red: 12 80% 64%;
 
 		--secondary: 30 10% 16%;
 		--secondary-foreground: 36 30% 90%;
@@ -318,6 +322,11 @@ img {
 	}
 	body {
 		@apply bg-background text-foreground;
+		/* Ruled notebook lines in faint blue ink. */
+		background-image: repeating-linear-gradient(
+			transparent 0 31px,
+			hsl(var(--primary) / 0.07) 31px 32px
+		);
 	}
 	/* Warm, on-brand text selection (instead of the browser's cold blue). */
 	::selection {

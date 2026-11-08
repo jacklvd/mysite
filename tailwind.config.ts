@@ -1,4 +1,7 @@
+// dev-note: Tailwind v3 plugins/utils are CJS-only and untyped; require() is the supported path.
+/* eslint-disable @typescript-eslint/no-require-imports */
 import type { Config } from 'tailwindcss';
+import type { PluginAPI } from 'tailwindcss/types/config';
 
 const {
 	default: flattenColorPalette,
@@ -22,6 +25,8 @@ const config: Config = {
 				title: ['var(--font-title)', 'var(--font-display)', 'cursive'],
 				// Casual handwriting for guestbook notes.
 				hand: ['var(--font-hand)', 'cursive'],
+				// Typewriter for labels, dates and margin notes.
+				type: ['var(--font-type)', 'ui-monospace', 'monospace'],
 			},
 			transitionTimingFunction: {
 				// Springy "pop" easing used for the sparkle hover burst.
@@ -35,6 +40,8 @@ const config: Config = {
 			colors: {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				// Second sketchbook ink (primary is the blue one).
+				'ink-red': 'hsl(var(--ink-red))',
 
 				card: {
 					DEFAULT: 'hsl(var(--card))',
@@ -120,11 +127,11 @@ const config: Config = {
 };
 
 // This plugin adds each Tailwind color as a global CSS variable, e.g. var(--gray-200).
-function addVariablesForColors({ addBase, theme }: any) {
-	let allColors = flattenColorPalette(theme('colors'));
-	let newVars = Object.fromEntries(
+function addVariablesForColors({ addBase, theme }: PluginAPI) {
+	const allColors = flattenColorPalette(theme('colors'));
+	const newVars = Object.fromEntries(
 		Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
-	);
+	) as Record<string, string>;
 
 	addBase({
 		':root': newVars,

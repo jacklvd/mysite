@@ -1,6 +1,5 @@
 'use client';
 import { useState } from 'react';
-import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
@@ -14,10 +13,6 @@ import {
 	WavyButtonBorder,
 	WavyDivider,
 } from '@/components/effects/wavy-frame';
-
-const Scene = dynamic(() => import('@/components/effects/scene'), {
-	ssr: false,
-});
 
 // ── Entrance choreography ────────────────────────────────────────────────────
 // Everything keys off `useEntranceOpen()` — the moment the preloader's book
@@ -87,16 +82,6 @@ export default function Home() {
 
 	return (
 		<div className="relative isolate min-h-screen overflow-hidden">
-			{/* 3D background — pointer-events-none so text stays interactive */}
-			<motion.div
-				className="absolute inset-0"
-				initial={{ opacity: 0 }}
-				animate={{ opacity: open ? 1 : 0 }}
-				transition={backdropFade}
-			>
-				<Scene />
-			</motion.div>
-
 			{/* Hand-drawn ink flourishes (moon, constellation, sparkles) */}
 			<motion.div
 				initial={{ opacity: 0 }}
