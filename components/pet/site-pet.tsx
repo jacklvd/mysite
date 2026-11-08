@@ -23,8 +23,8 @@ import {
 import { QUIPS, idleQuipFor, pick } from './quips';
 
 // ── Tunables ────────────────────────────────────────────────────────────────
-const PET_W = 54;
-const PET_H = 68;
+const PET_W = 68; // keeps the sprite's 48:60 aspect
+const PET_H = 85;
 const MARGIN = 4; // gap above the very bottom edge
 const SPEED = 42; // walk speed, px/s
 const GRAVITY = 2400; // px/s²
