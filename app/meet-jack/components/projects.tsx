@@ -4,25 +4,29 @@ import { useState, useEffect } from 'react';
 // import { client } from '@/client/client';
 import { motion } from 'framer-motion';
 import { GitBranch, ExternalLink } from 'lucide-react';
-import BentoCard from '@/components/magicui/bento-card';
-import {
-	WavyCard,
-	WavyButtonBorder,
-	WavyDivider,
-} from '@/components/effects/wavy-frame';
+import { WavyButtonBorder, WavyDivider } from '@/components/effects/wavy-frame';
+import { PageHeading } from '@/components/effects/page-heading';
 import { projectImageUrl } from '@/lib/projects/image';
 import Image from 'next/image';
 import Link from 'next/link';
-import { inView } from '@/components/effects/reveal';
 
-const itemVariants = {
-	hidden: { y: 16, opacity: 0 },
-	visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
+// Polaroids are pinned at slightly different angles; cycling a fixed list keeps
+// the wall looking hand-placed without random values (stable across renders).
+const TILTS = [-3, 2, -1.5, 2.5, -2, 1.5];
+
+const pinVariants = {
+	hidden: { y: 24, opacity: 0, rotate: 0 },
+	visible: (tilt: number) => ({
+		y: 0,
+		opacity: 1,
+		rotate: tilt,
+		transition: { type: 'spring' as const, stiffness: 140, damping: 16 },
+	}),
 };
 
-const containerVariants = {
+const wallVariants = {
 	hidden: { opacity: 0 },
-	visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+	visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
 };
 
 const Project = () => {
@@ -63,25 +67,15 @@ const Project = () => {
     */
 	}, []);
 
-	// Cap featured at 4 (the bento only renders four slots) so nothing is dropped.
-	const featuredWorks = works.filter(w => w.featured).slice(0, 4);
-	const featuredIds = new Set(featuredWorks.map(w => w._id));
-	const regularWorks = works.filter(w => !featuredIds.has(w._id));
+	// Featured projects lead the wall and get a red "star" note in the margin.
+	const ordered = [
+		...works.filter(w => w.featured),
+		...works.filter(w => !w.featured),
+	];
 
 	return (
 		<section className="py-16 md:py-24" id="work">
-			<motion.p
-				{...inView(0)}
-				className="text-[0.7rem] tracking-[0.4em] uppercase text-muted-foreground mb-3"
-			>
-				03 — Projects
-			</motion.p>
-			<motion.h2
-				{...inView(0.05)}
-				className="font-title text-5xl md:text-6xl text-foreground mb-12 md:mb-16"
-			>
-				Things I&apos;ve built.
-			</motion.h2>
+			<PageHeading page="03" label="projects" title="Things I've built." />
 
 			{isLoading ? (
 				<div className="flex justify-center items-center h-48">
@@ -89,155 +83,35 @@ const Project = () => {
 				</div>
 			) : (
 				<div className="space-y-16">
-					{/* Bento grid — featured projects */}
-					{featuredWorks.length > 0 && (
-						<div>
-							<motion.p
-								{...inView(0.1)}
-								className="text-[0.7rem] tracking-[0.3em] uppercase text-muted-foreground mb-6"
-							>
-								Featured
-							</motion.p>
-							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[minmax(180px,auto)]">
-								<motion.div
-									className="lg:col-span-2 lg:row-span-2"
-									variants={itemVariants}
-								>
-									<BentoCard work={featuredWorks[0]} size="large" />
-								</motion.div>
-								{featuredWorks[1] && (
-									<motion.div className="lg:col-span-2" variants={itemVariants}>
-										<BentoCard work={featuredWorks[1]} size="medium" />
-									</motion.div>
-								)}
-								{featuredWorks[2] && (
-									<motion.div variants={itemVariants}>
-										<BentoCard work={featuredWorks[2]} size="small" />
-									</motion.div>
-								)}
-								{featuredWorks[3] && (
-									<motion.div variants={itemVariants}>
-										<BentoCard work={featuredWorks[3]} size="small" />
-									</motion.div>
-								)}
-							</div>
-						</div>
-					)}
-
-					{/* Regular grid */}
-					{regularWorks.length > 0 && (
-						<div>
-							<motion.p
-								{...inView(0.1)}
-								className="text-[0.7rem] tracking-[0.3em] uppercase text-muted-foreground mb-6"
-							>
-								More work
-							</motion.p>
-							<motion.div
-								className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-								variants={containerVariants}
-								initial="hidden"
-								whileInView="visible"
-								viewport={{ once: true, margin: '-60px' }}
-							>
-								{regularWorks.map(work => (
-									<motion.div
-										key={work._id}
-										variants={itemVariants}
-										className="h-full"
-										data-pet-ledge
-									>
-										<WavyCard className="flex flex-col">
-											{/* Image */}
-											<Link
-												href={work.slug ? `/work/${work.slug}` : work.source}
-												className="aspect-video overflow-hidden block"
-											>
-												<Image
-													src={projectImageUrl(work.image)}
-													alt={work.title}
-													width={600}
-													height={338}
-													className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
-													loading="lazy"
-												/>
-											</Link>
-
-											<div className="p-5 flex flex-col flex-1">
-												<Link
-													href={work.slug ? `/work/${work.slug}` : work.source}
-												>
-													<h3 className="font-medium text-foreground mb-2 leading-snug">
-														{work.title}
-													</h3>
-												</Link>
-												<p className="text-sm text-muted-foreground leading-relaxed mb-4 flex-1">
-													{work.description.length > 120
-														? work.description.slice(0, 120) + '…'
-														: work.description}
-												</p>
-
-												{work.technologies && (
-													<div className="flex flex-wrap gap-1.5 mb-4">
-														{work.technologies
-															.slice(0, 3)
-															.map((tag: string) => (
-																<span
-																	key={tag}
-																	className="px-2 py-0.5 text-[0.7rem] tracking-wider uppercase border border-foreground/15 text-muted-foreground"
-																>
-																	{tag}
-																</span>
-															))}
-														{work.technologies.length > 3 && (
-															<span className="px-2 py-0.5 text-[0.7rem] tracking-wider uppercase border border-foreground/15 text-muted-foreground">
-																+{work.technologies.length - 3}
-															</span>
-														)}
-													</div>
-												)}
-
-												<div className="flex gap-3 pt-4 border-t border-foreground/10">
-													<a
-														href={work.source}
-														target="_blank"
-														rel="noreferrer"
-														className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-													>
-														<GitBranch size={13} />
-														Source
-													</a>
-													{work.demo && (
-														<a
-															href={work.demo}
-															target="_blank"
-															rel="noreferrer"
-															className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-														>
-															<ExternalLink size={13} />
-															Demo
-														</a>
-													)}
-												</div>
-											</div>
-										</WavyCard>
-									</motion.div>
-								))}
-							</motion.div>
-						</div>
-					)}
+					<motion.div
+						className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3"
+						variants={wallVariants}
+						initial="hidden"
+						whileInView="visible"
+						viewport={{ once: true, margin: '-60px' }}
+					>
+						{ordered.map((work, i) => (
+							<Polaroid
+								key={work._id}
+								work={work}
+								tilt={TILTS[i % TILTS.length]}
+							/>
+						))}
+					</motion.div>
 
 					{/* GitHub CTA */}
 					<WavyDivider className="mb-4" />
 					<div className="flex items-center justify-between">
-						<p className="text-sm text-muted-foreground">More on GitHub</p>
+						<p className="font-hand text-2xl text-muted-foreground">
+							more scribbles on GitHub →
+						</p>
 						<a
 							href="https://github.com/jacklvd"
 							target="_blank"
 							rel="noreferrer"
-							className="group relative inline-flex items-center gap-2.5 px-5 py-3 text-xs font-medium
+							className="group relative inline-flex items-center gap-2.5 px-5 py-3 font-type text-xs
                 hover:translate-x-[3px] hover:translate-y-[3px]
-                transition-all duration-100 tracking-[0.2em] uppercase"
+                transition-all duration-100 tracking-[0.15em] uppercase"
 						>
 							<WavyButtonBorder />
 							<GitBranch size={13} />
@@ -249,5 +123,83 @@ const Project = () => {
 		</section>
 	);
 };
+
+// A taped polaroid: photo, handwritten caption, a short note and typed tech
+// tags. Straightens and lifts on hover, like picking it up off the page.
+function Polaroid({ work, tilt }: { work: Work; tilt: number }) {
+	const href = work.slug ? `/work/${work.slug}` : work.source;
+	return (
+		<motion.article
+			custom={tilt}
+			variants={pinVariants}
+			whileHover={{ rotate: 0, y: -6, scale: 1.02 }}
+			className="group relative flex flex-col bg-card p-3 pb-5 shadow-[0_8px_20px_-6px_rgba(0,0,0,0.25)]"
+			data-pet-ledge
+		>
+			{/* Washi tape */}
+			<span
+				aria-hidden
+				className="absolute -top-2.5 left-1/2 z-10 h-5 w-20 -translate-x-1/2 -rotate-2 bg-[#e1d6bd]/75 shadow-sm"
+			/>
+
+			{work.featured && (
+				<span className="absolute -right-3 -top-4 z-10 rotate-6 font-hand text-xl font-bold text-ink-red">
+					★ fave
+				</span>
+			)}
+
+			<Link href={href} className="block aspect-[4/3] overflow-hidden">
+				<Image
+					src={projectImageUrl(work.image)}
+					alt={work.title}
+					width={600}
+					height={450}
+					className="h-full w-full object-cover sepia-[.25] transition-all duration-500 group-hover:scale-105 group-hover:sepia-0"
+					loading="lazy"
+				/>
+			</Link>
+
+			<Link href={href}>
+				<h3 className="mt-3 text-center font-hand text-3xl font-bold leading-tight text-primary">
+					{work.title}
+				</h3>
+			</Link>
+			<p className="mt-2 flex-1 px-1 text-sm leading-relaxed text-muted-foreground">
+				{work.description.length > 120
+					? work.description.slice(0, 120) + '…'
+					: work.description}
+			</p>
+
+			{work.technologies?.length > 0 && (
+				<p className="mt-3 px-1 font-type text-xs text-foreground/70">
+					{work.technologies.slice(0, 4).join(' · ')}
+				</p>
+			)}
+
+			<div className="mt-3 flex gap-4 px-1 font-type text-xs">
+				<a
+					href={work.source}
+					target="_blank"
+					rel="noreferrer"
+					className="flex items-center gap-1.5 border-b border-dashed border-primary/50 text-muted-foreground transition-colors hover:text-foreground"
+				>
+					<GitBranch size={12} />
+					source
+				</a>
+				{work.demo && (
+					<a
+						href={work.demo}
+						target="_blank"
+						rel="noreferrer"
+						className="flex items-center gap-1.5 border-b border-dashed border-primary/50 text-muted-foreground transition-colors hover:text-foreground"
+					>
+						<ExternalLink size={12} />
+						demo
+					</a>
+				)}
+			</div>
+		</motion.article>
+	);
+}
 
 export default Project;

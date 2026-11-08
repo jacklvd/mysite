@@ -8,7 +8,7 @@ import {
 	WavyButtonBorder,
 	WavyDivider,
 } from '@/components/effects/wavy-frame';
-import { inView } from '@/components/effects/reveal';
+import { PageHeading } from '@/components/effects/page-heading';
 
 interface Publication {
 	title: string;
@@ -63,18 +63,7 @@ export const PublicationsSection = () => {
 
 	return (
 		<section className="py-16 md:py-24" id="publications">
-			<motion.p
-				{...inView()}
-				className="text-[0.7rem] tracking-[0.4em] uppercase text-muted-foreground mb-3"
-			>
-				04 — Research
-			</motion.p>
-			<motion.h2
-				{...inView(0.05)}
-				className="font-title text-5xl md:text-6xl text-foreground mb-12 md:mb-16"
-			>
-				Publications.
-			</motion.h2>
+			<PageHeading page="04" label="research" title="Publications." />
 
 			<div className="space-y-0">
 				{publications.map((pub, index) => (
@@ -103,7 +92,7 @@ export const PublicationsSection = () => {
 										<h3 className="font-serif text-lg md:text-xl text-foreground leading-snug group-hover:text-foreground/80 transition-colors">
 											{pub.title}
 										</h3>
-										<span className="relative inline-block shrink-0 text-[0.7rem] tracking-[0.2em] uppercase px-2 py-0.5 text-muted-foreground mt-1">
+										<span className="relative inline-block shrink-0 text-[0.7rem] font-type tracking-[0.15em] uppercase px-2 py-0.5 text-muted-foreground mt-1">
 											<WavyBorder
 												filterId="wavy-frame-sm"
 												className="border border-foreground/25"
@@ -150,7 +139,7 @@ export const PublicationsSection = () => {
 					rel="noopener noreferrer"
 					className="group relative inline-flex items-center gap-2.5 px-5 py-3 text-xs font-medium
             hover:translate-x-[3px] hover:translate-y-[3px]
-            transition-all duration-100 tracking-[0.2em] uppercase"
+            transition-all duration-100 font-type tracking-[0.15em] uppercase"
 				>
 					<WavyButtonBorder />
 					<BookOpen size={13} />
