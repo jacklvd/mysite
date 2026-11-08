@@ -10,8 +10,8 @@ import {
 	useTransform,
 	useReducedMotion,
 } from 'framer-motion';
-import { inView } from '@/components/effects/reveal';
 import { railSpan, type RailSpan } from '@/lib/experience/rail';
+import { PageHeading } from '@/components/effects/page-heading';
 
 interface Experience {
 	_id: string;
@@ -44,14 +44,19 @@ function Role({
 			<span
 				aria-hidden
 				data-rail-dot
-				className={`absolute left-0 h-[7px] w-[7px] -translate-x-[3px] translate-y-[0.55rem] rounded-full border transition-colors duration-500 ${
+				className={`absolute left-0 h-[11px] w-[11px] -translate-x-[5px] translate-y-[0.7rem] rounded-full border-2 transition-colors duration-500 ${
 					active
-						? 'border-foreground bg-foreground'
-						: 'border-foreground/30 bg-background'
+						? 'border-ink-red bg-ink-red'
+						: 'border-ink-red/40 bg-background'
 				}`}
 			/>
 
-			<h3 className="text-xl font-medium text-foreground">{exp.position}</h3>
+			<p className="font-type text-xs tracking-[0.12em] text-muted-foreground">
+				{exp.date}
+			</p>
+			<h3 className="mt-1 font-hand text-3xl font-bold leading-tight text-primary">
+				{exp.position}
+			</h3>
 			<a
 				href={exp.url}
 				target="_blank"
@@ -61,9 +66,6 @@ function Role({
 				{exp.company}
 				<ExternalLink size={11} />
 			</a>
-			<p className="mt-2 text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground">
-				{exp.date}
-			</p>
 
 			<ul className="mt-6 space-y-3">
 				{exp.description.map((item, i) => (
@@ -75,7 +77,12 @@ function Role({
 						transition={{ delay: i * 0.07, duration: 0.3 }}
 						className="flex items-start gap-3 text-sm leading-relaxed text-foreground/70"
 					>
-						<span className="mt-[0.4rem] h-1 w-1 shrink-0 rounded-full bg-foreground/30" />
+						<span
+							aria-hidden
+							className="shrink-0 font-hand text-lg leading-6 text-ink-red"
+						>
+							–
+						</span>
 						{item}
 					</motion.li>
 				))}
@@ -155,7 +162,7 @@ function Timeline({ experiences }: { experiences: Experience[] }) {
 			<span
 				aria-hidden
 				style={{ top: span.top, height: span.height }}
-				className="absolute left-0 w-px bg-foreground/10"
+				className="absolute left-0 w-0.5 bg-ink-red/15"
 			/>
 			{/* Filled portion, scrubbed by scroll position */}
 			<motion.span
@@ -165,7 +172,7 @@ function Timeline({ experiences }: { experiences: Experience[] }) {
 					height: span.height,
 					scaleY: reduced ? 1 : fill,
 				}}
-				className="absolute left-0 w-px origin-top bg-foreground/45"
+				className="absolute left-0 w-0.5 origin-top bg-ink-red/60"
 			/>
 
 			{experiences.map((exp, i) => (
@@ -198,18 +205,7 @@ const ExperienceSection: React.FC = () => {
 
 	return (
 		<section className="py-16 md:py-24" id="experience">
-			<motion.p
-				{...inView(0)}
-				className="mb-3 text-[0.7rem] uppercase tracking-[0.4em] text-muted-foreground"
-			>
-				02 — Experience
-			</motion.p>
-			<motion.h2
-				{...inView(0.05)}
-				className="mb-12 font-title text-5xl text-foreground md:mb-16 md:text-6xl"
-			>
-				Where I&apos;ve worked.
-			</motion.h2>
+			<PageHeading page="02" label="experience" title="Where I've worked." />
 
 			{isLoading ? (
 				<div className="flex min-h-[200px] items-center justify-center">
