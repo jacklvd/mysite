@@ -153,7 +153,12 @@ export function ParallaxBackdrop({
 	const prefersReduced = useReducedMotion();
 	const [isSmall, setIsSmall] = useState(false);
 	const { scrollYProgress: windowY } = useScroll();
-	const { scrollXProgress: bookX } = useScroll({ container: book });
+	// Passive effect: the book's ref is on a later sibling, attached after our
+	// layout effects would run (and useScroll silently falls back to window).
+	const { scrollXProgress: bookX } = useScroll({
+		container: book,
+		layoutEffect: false,
+	});
 	const scrollYProgress = useTransform<number, number>(
 		[windowY, bookX],
 		([y, x]) => Math.max(y, x)

@@ -72,6 +72,7 @@ export function About() {
 	const prefersReduced = useReducedMotion();
 	const { scrollYProgress: portraitProgress } = useScroll({
 		container: usePageScroller(),
+		layoutEffect: false, // page ref is on an ancestor; see experience.tsx
 		target: portraitRef,
 		offset: ['start end', 'end start'],
 	});

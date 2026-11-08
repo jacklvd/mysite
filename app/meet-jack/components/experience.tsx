@@ -107,7 +107,10 @@ function Timeline({ experiences }: { experiences: Experience[] }) {
 	// of the rail's height is at the centre at exactly progress f — which is what
 	// lets the pixel offsets below divide straight through into a progress range.
 	const { scrollYProgress } = useScroll({
+		// The page scroller's ref lives on an ancestor and is attached after this
+		// component's layout effects; a passive effect runs once it's set.
 		container: usePageScroller(),
+		layoutEffect: false,
 		target: railRef,
 		offset: ['start center', 'end center'],
 	});
